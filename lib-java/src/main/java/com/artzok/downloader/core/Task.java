@@ -149,4 +149,8 @@ public class Task {
     public Object removeParams(String key) {
         return mParams.remove(key);
     }
+
+    public Status getStatus() {
+        return mStatus;
+    }
 }

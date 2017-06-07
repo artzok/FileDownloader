@@ -2,7 +2,7 @@ package com.artzok.downloader.core;
 
 
 import com.artzok.downloader.FileDownloader;
-import com.artzok.downloader.defaults.DefaultDataSource;
+import com.artzok.downloader.thread.Scheduler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,14 +34,42 @@ public class Config {
      */
     private int mProgressCount;
 
+    /**
+     * 任务状态、进度、动作改变时的回调方式
+     */
+    private Scheduler mScheduler;
+
     public Config() {
-        mGlobalRegisters = new ArrayList<>(2);
-        mDownloadDir = new File(System.getProperty("user.home"));
+        mDownloadDir = new File(System.getProperty("user.download"));
         mExtName = "";
+        mGlobalRegisters = new ArrayList<>(2);
         mMaxCount = 2 << 3;
-        mDataSource = new DefaultDataSource();
+        mDataSource = DataSource.DEFAULT;
         mProgressType = FileDownloader.ProgressType.TIMES;
         mProgressCount = 100;
+        mScheduler = Scheduler.CURRENT_THREAD;
+    }
+
+    public void checkValid() {
+        if(!mDownloadDir.exists()) {
+            mDownloadDir.mkdirs();
+        }
+        if(!mDownloadDir.exists() || mDownloadDir.isFile())
+            throw new RuntimeException("Download dir must be an existing directory.");
+        // for ext
+        if(mMaxCount >= 2 << 10) {
+            throw new RuntimeException("The maximum number of concurrent connections must less 1024.");
+        }
+        if(mProgressType == FileDownloader.ProgressType.TIMES) {
+            if(mProgressCount > 100) {
+                throw new RuntimeException("The maximum update times must less 100 for a single task.");
+            }
+        }
+        if(mProgressType == FileDownloader.ProgressType.BYTES) {
+            if(mProgressCount < 100) {
+                throw new RuntimeException("The minimum bytes must great than 100 kb for each update.");
+            }
+        }
     }
 
     public File getDownloadDir() {
@@ -98,5 +126,13 @@ public class Config {
 
     public void setProgressCount(int progressCount) {
         mProgressCount = progressCount;
+    }
+
+    public void setScheduler(Scheduler scheduler) {
+        mScheduler = scheduler;
+    }
+
+    public Scheduler getScheduler() {
+        return mScheduler;
     }
 }

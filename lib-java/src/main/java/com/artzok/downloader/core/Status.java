@@ -22,6 +22,40 @@ public enum Status {
         if (status == null) return 0;
         return status.ordinal();
     }
+
+    public  boolean checkoutDownload() {
+        switch (this) {
+            case DOWNLOADABLE:
+            case PAUSE:
+            case FAILED:
+                return true;
+        }
+        return false;
+    }
+
+    public  boolean checkoutCancel() {
+        switch (this) {
+            case PENDING:
+            case DOWNLOADING:
+            case PAUSE:
+            case FAILED:
+                return true;
+        }
+        return false;
+    }
+
+    public  boolean checkoutPause() {
+        switch (this) {
+            case PENDING:
+            case DOWNLOADING:
+                return true;
+        }
+        return false;
+    }
+
+    public  boolean checkoutOpen() {
+        return this == COMPLETED;
+    }
 }
 
 
