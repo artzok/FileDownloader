@@ -88,8 +88,8 @@ public class Task {
     }
 
     /*在指定线程通知所有注册者*/
-    void notifyChanged(Scheduler scheduler, final Action action, boolean update) {
-        if (update) mStatus = Status.query(this);
+    void notifyChanged(Scheduler scheduler, final Action action) {
+        if (action == Action.CHANGED) mStatus = Status.query(this);
         scheduler.execute(new Runnable() {
             public void run() {
                 for (int hasCode : mRegisters.keySet()) {
@@ -112,6 +112,10 @@ public class Task {
 
     public long getCreateTime() {
         return mCreateTime;
+    }
+
+    public TaskMeta getTaskMeta() {
+        return mTaskMeta;
     }
 
     public long getStartTime() {

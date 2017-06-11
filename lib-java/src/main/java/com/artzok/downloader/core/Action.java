@@ -20,7 +20,10 @@ public enum Action {
     FINISHED,
 
     // 当任务的状态一旦发生改变时发送该通知
-    CHANGED;
+    CHANGED,
+
+    // 当任务状态未发生改变，但下载任务的其他信息发生了改变
+    UPDATE;
 
     public static Action guessUserAction(Status status) {
         switch (status) {
