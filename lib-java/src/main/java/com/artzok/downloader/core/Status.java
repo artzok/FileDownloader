@@ -1,6 +1,8 @@
 package com.artzok.downloader.core;
 
 
+import com.artzok.downloader.FileDownloader;
+
 public enum Status {
     DOWNLOADABLE,       // 下载
     PENDING,            // 阻塞
@@ -10,7 +12,10 @@ public enum Status {
     COMPLETED,          // 完成
     UNDEF;
 
-    static Status query(Task task) {
+    static Status query(Task task, FileDownloader downloader) {
+        TaskManager manager = downloader.getTaskManager();
+        boolean pending = manager.isPending(task);
+        boolean downloading = manager.idDownloading(task);
         return COMPLETED;
     }
 
@@ -23,7 +28,7 @@ public enum Status {
         return status.ordinal();
     }
 
-    public  boolean checkoutDownload() {
+    public boolean checkoutDownload() {
         switch (this) {
             case DOWNLOADABLE:
             case PAUSE:
@@ -33,7 +38,7 @@ public enum Status {
         return false;
     }
 
-    public  boolean checkoutCancel() {
+    public boolean checkoutCancel() {
         switch (this) {
             case PENDING:
             case DOWNLOADING:
@@ -44,7 +49,7 @@ public enum Status {
         return false;
     }
 
-    public  boolean checkoutPause() {
+    public boolean checkoutPause() {
         switch (this) {
             case PENDING:
             case DOWNLOADING:
@@ -53,7 +58,7 @@ public enum Status {
         return false;
     }
 
-    public  boolean checkoutOpen() {
+    public boolean checkoutOpen() {
         return this == COMPLETED;
     }
 }

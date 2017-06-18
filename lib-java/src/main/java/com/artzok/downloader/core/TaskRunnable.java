@@ -126,15 +126,16 @@ class TaskRunnable implements Runnable {
             mFuture.cancel(true);
 
             // 下载成功通知
-            boolean succeed = file.exists() && ApkUtils.isValid(ctx, file);
-            mTask.notifyChanged(mScheduler, file.exists()? Action.DOWNLOAD);
-            manager.executeTask(mTask, succeed ? Action.DOWNLOAD_SUCCEED : Action.DOWNLOAD_FAILED);
+            if (file.exists()) {
+                mTask.setFinishTime(System.currentTimeMillis());
+                mTask.notifyChanged(mScheduler, Action.DOWNLOAD_SUCCEED);
+            }
 
         } catch (Throwable e) {
             e.printStackTrace();
             // notify all register when occur some error
-            mTask.setLockSelfResp(false);
-            manager.executeTask(mTask, Action.DOWNLOAD_FAILED);
+//            mTask.setLockSelfResp(false);
+            mTask.notifyChanged(mScheduler, Action.DOWNLOAD_FAILED);
         } finally {
             safeRelease(is, accessFile);
         }

@@ -1,5 +1,6 @@
 package com.artzok.downloader.core;
 
+import com.artzok.downloader.FileDownloader;
 import com.artzok.downloader.defaults.Register;
 import com.artzok.downloader.thread.Scheduler;
 
@@ -47,7 +48,9 @@ public class Task {
     /*本任务的所有注册者(监听进度、行为、状态的注册者)*/
     private HashMap<Integer, WeakReference<? extends Registrable>> mRegisters;
 
-    public Task(TaskMeta meta) {
+    private FileDownloader mFileDownloader;
+
+    public Task(TaskMeta meta, FileDownloader downloader) {
         mTaskMeta = meta;
         mParams = new HashMap<>();
         mStatus = Status.UNDEF;
@@ -55,6 +58,8 @@ public class Task {
         mCreateTime = System.currentTimeMillis();
         mStartTime = 0L;
         mFinishTime = 0L;
+        mFileDownloader = downloader;
+        sTasks.put(getUUID(), this);
     }
 
     /*注册者与关联的任务建立观察者关系*/
@@ -156,5 +161,9 @@ public class Task {
 
     public Status getStatus() {
         return mStatus;
+    }
+
+    public String getUUID() {
+        return mTaskMeta.getDownloadUrl();
     }
 }

@@ -4,6 +4,7 @@ import com.artzok.downloader.core.Config;
 import com.artzok.downloader.core.DataSource;
 import com.artzok.downloader.core.Registrable;
 import com.artzok.downloader.core.Task;
+import com.artzok.downloader.core.TaskManager;
 
 import java.io.File;
 /**
@@ -16,6 +17,7 @@ public class FileDownloader {
     /*用户配置*/
     private Config mConfig;
 
+    private TaskManager mTaskManager;
 
     private FileDownloader(Config config) {
         mConfig = config;
@@ -35,6 +37,18 @@ public class FileDownloader {
 
     public enum ProgressType {
         BYTES, TIMES
+    }
+
+    public TaskManager getTaskManager() {
+        return mTaskManager;
+    }
+
+    public Config getConfig() {
+        return mConfig;
+    }
+
+    public void setConfig(Config config) {
+        mConfig = config;
     }
 
     public static class Builder {

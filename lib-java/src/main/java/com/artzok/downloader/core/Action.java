@@ -23,7 +23,12 @@ public enum Action {
     CHANGED,
 
     // 当任务状态未发生改变，但下载任务的其他信息发生了改变
-    UPDATE;
+    UPDATE,
+
+    // 下载成功后通知一次
+    DOWNLOAD_SUCCEED,
+
+    DOWNLOAD_FAILED;
 
     public static Action guessUserAction(Status status) {
         switch (status) {
